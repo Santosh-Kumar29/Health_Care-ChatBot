@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ChatBot</title>
+	<style>
+		h1{
+			color:#8d0fff;
+			font-family: Verdana;
+			font-size: 2.5rem;
+		}
+		
+		input[type=text] {
+			width: 16.5%;
+			padding: 12px 20px;
+			box-sizing: border-box;
+			border: none;
+			background-color: #ffff004d;
+			color: #585207;
+			box-shadow: 0 0 14px #ef0808;
+		}
+		
+		.bot-message,.user-message{
+			font-family:vardana;
+			font-size:18px;
+			border-radius:10px;
+		}
+		
+		.bot-message{
+			color: #094c09;
+			text-align: left;
+			background-color: #ffd0d899;
+			box-shadow: 5px 6px 13px 0px black;
+		}
+		img{
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+		}
+		
+		.user-message{
+			color: #3d1c69;
+			text-align: right;
+			background-color: #701ad60f;
+			box-shadow: -5px 7px 13px black;
+		}
+		#messages{
+			width:300px;
+			margin:0 auto;
+			/*background-color:gray;*/
+		}
+		body {
+			background:#6fafcd61 url("{{ url_for('static', filename='images/bottrans.gif') }}") no-repeat fixed left;
+			
+		}
+	</style>
+</head>
+<body>
+	<center><h1>Welcome to Health Care ChatBot!</h1></center>
+	<center>
+	<div id="messages">
+			<p class="bot-message"><span><img src="{{ url_for('static', filename='images/loading.gif') }}" alt="botpic" align="left" >Please try typing full sentences as I am still learning!</span></p>
+			<p class="bot-message"><span><img src="{{ url_for('static', filename='images/loading.gif') }}" alt="botpic" align="left" >I am a chatbot. You can begin conversation by typing in a message and pressing enter.</span></p>
+			<p class="bot-message"><span><img src="{{ url_for('static', filename='images/loading.gif') }}" alt="botpic" align="left" >Hi There!<br> What is your name? </span></p>
+	</div>
+	</center>
+	<br>
+	<center>
+	<div id="form">
+		<input id="question" type="text" name="question" placeholder="What you want to ask?">
+		<input type="image" src="{{ url_for('static', filename='images/ask.png') }}" width="48" height="28" id="ask">
+	</div>
+	</center>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+			  crossorigin="anonymous">
+	</script>
+	
+	<script>
+	
+		function getBotResponse() {
+          var ques = $("#question").val();
+          var userHtml = "<p class=\"user-message\"> "+ques+"<img src=\"{{ url_for('static', filename='images/man.png') }}\" alt=\"User\"  > </p>";
+          $("#question").val("");
+          $("#messages").append(userHtml);
+          document.getElementById('question').scrollIntoView({block: 'start', behavior: 'smooth'});
+          $.get("/get", { msg: ques }).done(function(data) {
+            var botHtml = "<p class=\"bot-message\"> <img src=\"{{ url_for('static', filename='images/loading.gif') }}\" alt=\"Bot\"  > "+data+"</p>";
+            $("#messages").append(botHtml);
+            document.getElementById('question').scrollIntoView({block: 'start', behavior: 'smooth'});
+          });
+        }
+		
+		
+		$("#question").keypress(function(e) {
+            if(e.which == 13) {
+                getBotResponse();
+            }
+        });
+        $("#ask").click(function() {
+          getBotResponse();
+        })
+	</script>
+</body>
+</html>
